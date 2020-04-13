@@ -35,7 +35,7 @@ node {
     }
 
     stage('marslander-pipeline-deploy-to-qa') {
-        deploy(adapters: [$class: 'tomcat7', url: 'http://3.15.174.32:8080/', credentialsId: 'tomcat'], war: '**/*.war', contextPath: '/QAWebapp')
+        deploy(adapters: [[$class: 'tomcat7', url: 'http://3.15.174.32:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/QAWebapp')
     }
 
     stage('Publish build info') {
