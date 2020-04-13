@@ -21,9 +21,13 @@ node {
 
     stage('Static code analysis') {
         //sh 'mvn ${env.SONAR_MAVEN_GOAL} -Dsonar.host.url=${env.SONAR_HOST_URL}'
-        withMaven({
+        //withMaven({
+        //    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar -Dsonar.host.url=http://40.78.6.96:9000/'
+        //})
+        def mvn_version = 'M3'
+        withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ) {
             sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar -Dsonar.host.url=http://40.78.6.96:9000/'
-        })
+        }
     }
 
     stage('Maven build') {
