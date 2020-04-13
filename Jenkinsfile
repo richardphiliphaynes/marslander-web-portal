@@ -35,15 +35,15 @@ node {
     }
 
     stage('marslander-pipeline-deploy-to-qa') {
-        deploy(adapters: [[$class: 'Tomcat7xAdapter', url: 'http://3.15.174.32:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/QAWebapp')
+        deploy(adapters: [[$class: 'Tomcat7xAdapter', url: 'http://3.15.174.32:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/QAMarslanderWebPortal')
     }
 
     stage('Publish build info') {
         artifactoryServer.publishBuildInfo buildInfo
     }
 
-    //stage('marslander-pipeline-deploy-to-production') {
-    //    deploy adapters: "tomcat7" war: "**/*.war" contextPath: "/QAWebapp" url: "http://3.19.211.54:8080/" credentialsId: "tomcat"
-    //}
+    stage('marslander-pipeline-deploy-to-production') {
+        deploy(adapters: [[$class: 'Tomcat7xAdapter', url: 'http://3.19.211.54:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/ProdMarslanderWebPortal')
+    }
 
 }
