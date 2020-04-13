@@ -25,11 +25,11 @@ node {
         //    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar -Dsonar.host.url=http://40.78.6.96:9000/'
         //})
         def mvn_version = 'M3'
-        slackSend("Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)")
+        slackSend message: "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (${env.BUILD_URL})"
         withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ) {
             sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar -Dsonar.host.url=http://40.78.6.96:9000/'
         }
-        slackSend("Build Completed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)")
+        slackSend message: "Build Completed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (${env.BUILD_URL})"
     }
 
     stage('Maven build') {
