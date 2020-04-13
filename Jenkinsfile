@@ -37,19 +37,42 @@ node {
     }
 
     stage('Maven build') {
-        buildInfo = rtMaven.run tool: 'M3', pom: 'pom.xml', goals: 'clean install'
+        slackSend(message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        try {
+            buildInfo = rtMaven.run tool: 'M3', pom: 'pom.xml', goals: 'clean install'
+            slackSend(message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        } catch (err) {
+            slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
     }
 
     stage('marslander-pipeline-deploy-to-qa') {
-        deploy(adapters: [[$class: 'Tomcat7xAdapter', url: 'http://3.15.174.32:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/QAMarslanderWebPortal')
+        slackSend(message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        try {
+            deploy(adapters: [[$class: 'Tomcat7xAdapter', url: 'http://3.15.174.32:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/QAMarslanderWebPortal')
+            slackSend(message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        } catch (err) {
+            slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
     }
 
     stage('Publish build info') {
-        artifactoryServer.publishBuildInfo buildInfo
+        slackSend(message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        try {
+            artifactoryServer.publishBuildInfo buildInfo
+            slackSend(message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        } catch (err) {
+            slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
     }
 
     stage('marslander-pipeline-deploy-to-production') {
-        deploy(adapters: [[$class: 'Tomcat7xAdapter', url: 'http://3.19.211.54:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/ProdMarslanderWebPortal')
+        slackSend(message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        try {
+            deploy(adapters: [[$class: 'Tomcat7xAdapter', url: 'http://3.19.211.54:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/ProdMarslanderWebPortal')
+        } catch (err) {
+            slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
     }
 
 }
