@@ -25,53 +25,54 @@ node {
         //    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar -Dsonar.host.url=http://40.78.6.96:9000/'
         //})
         def mvn_version = 'M3'
-        slackSend(message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        slackSend(message: "STARTED: Static code analysis of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         try {
             withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ) {
                 sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar -Dsonar.host.url=http://40.78.6.96:9000/'
             }
-            slackSend(message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend(message: "SUCCESSFUL: Static code analysis of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         } catch (err) {
-            slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend(message: "FAILURE: Static code analysis of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         }
     }
 
     stage('Maven build') {
-        slackSend(message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        slackSend(message: "STARTED: Maven build of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         try {
             buildInfo = rtMaven.run tool: 'M3', pom: 'pom.xml', goals: 'clean install'
-            slackSend(message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend(message: "SUCCESSFUL: Maven build of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         } catch (err) {
-            slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend(message: "FAILURE: Maven build of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         }
     }
 
     stage('marslander-pipeline-deploy-to-qa') {
-        slackSend(message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        slackSend(message: "STARTED: QA deployment of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         try {
             deploy(adapters: [[$class: 'Tomcat7xAdapter', url: 'http://3.15.174.32:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/QAMarslanderWebPortal')
-            slackSend(message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend(message: "SUCCESSFUL: QA deployment of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         } catch (err) {
-            slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend(message: "FAILURE: QA deployment of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         }
     }
 
     stage('Publish build info') {
-        slackSend(message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        slackSend(message: "STARTED: Artifactory deployment of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         try {
             artifactoryServer.publishBuildInfo buildInfo
-            slackSend(message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend(message: "SUCCESSFUL: Artifactory deployment of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         } catch (err) {
-            slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend(message: "FAILURE: Artifactory deployment of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         }
     }
 
     stage('marslander-pipeline-deploy-to-production') {
-        slackSend(message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        slackSend(message: "STARTED: Production deployment of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         try {
             deploy(adapters: [[$class: 'Tomcat7xAdapter', url: 'http://3.19.211.54:8080/', credentialsId: 'tomcat']], war: '**/*.war', contextPath: '/ProdMarslanderWebPortal')
+            slackSend(message: "SUCCESSFUL: Production deployment of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         } catch (err) {
-            slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend(message: "FAILURE: Production deployment of job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'")
         }
     }
 
