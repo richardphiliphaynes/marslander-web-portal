@@ -31,7 +31,7 @@ node {
     }
 
     stage('Maven build') {
-        buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
+        buildInfo = rtMaven.run tool: 'M3', pom: 'pom.xml', goals: 'clean install'
     }
 
     //stage('marslander-pipeline-deploy-to-qa') {
