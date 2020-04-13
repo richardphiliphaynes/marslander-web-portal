@@ -34,9 +34,9 @@ node {
         buildInfo = rtMaven.run tool: 'M3', pom: 'pom.xml', goals: 'clean install'
     }
 
-    //stage('marslander-pipeline-deploy-to-qa') {
-    //    deploy adapters: "tomcat7" war: "**/*.war" contextPath: "/QAWebapp" url: "http://3.15.174.32:8080/" credentialsId: "tomcat"
-    //}
+    stage('marslander-pipeline-deploy-to-qa') {
+        deploy adapters: [$class: 'tomcat7', url: 'http://3.15.174.32:8080/' credentialsId: 'tomcat'], war: '**/*.war' contextPath: '/QAWebapp'
+    }
 
     stage('Publish build info') {
         artifactoryServer.publishBuildInfo buildInfo
