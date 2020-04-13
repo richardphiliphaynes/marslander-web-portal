@@ -27,15 +27,15 @@ node {
         buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
     }
 
-    stage('marslander-pipeline-deploy-to-qa') {
-        deploy adapters: "tomcat7" war: "**/*.war" contextPath: "/QAWebapp" url: "http://3.15.174.32:8080/" credentialsId: "tomcat"
-    }
+    #stage('marslander-pipeline-deploy-to-qa') {
+    #    deploy adapters: "tomcat7" war: "**/*.war" contextPath: "/QAWebapp" url: "http://3.15.174.32:8080/" credentialsId: "tomcat"
+    #}
 
     stage('Publish build info') {
         artifactoryServer.publishBuildInfo buildInfo
     }
 
-    stage('marslander-pipeline-deploy-to-production') {
-        deploy adapters: "tomcat7" war: "**/*.war" contextPath: "/QAWebapp" url: "http://3.19.211.54:8080/" credentialsId: "tomcat"
-    }
+    #stage('marslander-pipeline-deploy-to-production') {
+    #    deploy adapters: "tomcat7" war: "**/*.war" contextPath: "/QAWebapp" url: "http://3.19.211.54:8080/" credentialsId: "tomcat"
+    #}
 }
